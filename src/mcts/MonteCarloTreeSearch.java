@@ -13,7 +13,7 @@ public class MonteCarloTreeSearch {
 		
 		for (int i = 0; i < simulations_number; i++) {
 			MonteCarloTreeSearchNode v = this._tree_policy();
-			int reward = v.rollout();
+			Integer reward = v.rollout();
 			
 			v.backpropagate(reward);
 		}

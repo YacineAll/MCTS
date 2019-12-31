@@ -75,7 +75,7 @@ public class TwoPlayersGameMonteCarloTreeSearchNode extends MonteCarloTreeSearch
 	}
 
 	@Override
-	public int rollout() {
+	public Integer rollout() {
 		State current_rollout_state = this.getState();
 		while (!current_rollout_state.is_game_over()) {
 			List<Action> possible_moves = current_rollout_state.get_legal_actions();
@@ -91,7 +91,7 @@ public class TwoPlayersGameMonteCarloTreeSearchNode extends MonteCarloTreeSearch
 	}
 
 	@Override
-	public void backpropagate(int result) {
+	public void backpropagate(Integer result) {
 		this.number_of_visits += 1;
 		
 		int old = this._results.get(result) == null ? 0 :  this._results.get(result);

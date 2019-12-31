@@ -1,4 +1,4 @@
-package game.tictactoe;
+package game.connect4;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,24 +24,24 @@ import mcts.MonteCarloTreeSearch;
 import mcts.MonteCarloTreeSearchNode;
 import mcts.TwoPlayersGameMonteCarloTreeSearchNode;
 
-public class TicTacToe_GUI extends Application {
-	private final int nb_simulation = 1000;
+public class Connect4GUI extends Application {
+	private final int nb_simulation = 10000;
 
-	private Tile[][] board = new Tile[3][3];
+	private Tile[][] board = new Tile[6][7];
 	private List<Combo> combos = new ArrayList<>();
-	private State state = new TicTacToeGameState(-1);
+	private State state = new Connect4State(-1);
 
 	private Pane root = new Pane();
 
 	private Parent createContent() {
 
-		root.setPrefSize(600, 600);
+		root.setPrefSize(700, 600);
 
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 7; j++) {
 				Tile tile = new Tile(true, i, j);
-				tile.setTranslateX(j * 200);
-				tile.setTranslateY(i * 200);
+				tile.setTranslateX(j * 100);
+				tile.setTranslateY(i * 100);
 
 				root.getChildren().add(tile);
 
@@ -68,21 +68,22 @@ public class TicTacToe_GUI extends Application {
 
 	private void o_play() {
 		try {
-			
-			if (!state.is_game_over() &&  (state.next_to_move() == -1) ) {
+
+			if (!state.is_game_over() && (state.next_to_move() == -1)) {
 
 				System.out.println(state);
 				MonteCarloTreeSearchNode root = new TwoPlayersGameMonteCarloTreeSearchNode(state, null, null);
 				MonteCarloTreeSearch ts = new MonteCarloTreeSearch(root);
-				TicTacToeMove move = (TicTacToeMove) ts.best_action(nb_simulation).getAction();
+				Connect4Action move = (Connect4Action) ts.best_action(nb_simulation).getAction();
 				state = state.move(move);
 				System.out.println(state);
-				this.board[move.getX_coordinate()][move.getY_coordinate()].setPlayable(false);
-				if (move.getValue() == 1) {
-					this.board[move.getX_coordinate()][move.getY_coordinate()].drawX();
-				} else {
-					this.board[move.getX_coordinate()][move.getY_coordinate()].drawO();
-				}
+				Connect4State st = (Connect4State) state;
+				int x = st.get_x_availble(move.getIndex()) + 1;
+				int y = move.getIndex();
+				this.board[x][move.getIndex()].setPlayable(false);
+
+				this.board[x][y].drawO();
+
 			}
 
 		} catch (Exception e) {
@@ -102,7 +103,7 @@ public class TicTacToe_GUI extends Application {
 			this.x = x;
 			this.y = y;
 
-			Rectangle border = new Rectangle(200, 200);
+			Rectangle border = new Rectangle(100, 100);
 			border.setFill(null);
 			border.setStroke(Color.BLACK);
 			this.playable = playable;
@@ -118,13 +119,18 @@ public class TicTacToe_GUI extends Application {
 
 				if (state.next_to_move() == 1) {
 					try {
-						state = state.move(new TicTacToeMove(this.x, this.y, 1));
-						drawX();
+
+						state = state.move(new Connect4Action(this.y, 1));
+
+						Connect4State st = (Connect4State) state;
+						
+						board[st.get_x_availble(this.y) + 1][this.y].drawX();
 						this.playable = false;
-						checkState();
 						o_play();
-						checkState();
+					} catch (IndexOutOfBoundsException e) {
+						return;
 					} catch (Exception e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -176,43 +182,4 @@ public class TicTacToe_GUI extends Application {
 		o_play();
 	}
 
-	private void checkState() {
-		for (Combo combo : combos) {
-			if (combo.isComplete()) {
-				playWinAnimation(combo);
-				break;
-			}
-		}
-	}
-
-	private void playWinAnimation(Combo combo) {
-		Line line = new Line();
-		line.setStartX(combo.tiles[0].getCenterX());
-		line.setStartY(combo.tiles[0].getCenterY());
-		line.setEndX(combo.tiles[0].getCenterX());
-		line.setEndY(combo.tiles[0].getCenterY());
-
-		root.getChildren().add(line);
-
-		Timeline timeline = new Timeline();
-		timeline.getKeyFrames()
-				.add(new KeyFrame(Duration.seconds(1), new KeyValue(line.endXProperty(), combo.tiles[2].getCenterX()),
-						new KeyValue(line.endYProperty(), combo.tiles[2].getCenterY())));
-		timeline.play();
-	}
-
-	private class Combo {
-		private Tile[] tiles;
-
-		public Combo(Tile... tiles) {
-			this.tiles = tiles;
-		}
-
-		public boolean isComplete() {
-			if (tiles[0].getValue().isEmpty())
-				return false;
-
-			return tiles[0].getValue().equals(tiles[1].getValue()) && tiles[0].getValue().equals(tiles[2].getValue());
-		}
-	}
 }

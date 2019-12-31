@@ -61,9 +61,9 @@ public abstract class MonteCarloTreeSearchNode {
 
 	public abstract boolean is_terminal_node();
 
-	public abstract int rollout();
+	public abstract Integer rollout();
 
-	public abstract void backpropagate(int result);
+	public abstract void backpropagate(Integer result);
 
 	public MonteCarloTreeSearchNode best_child(double c_param) {
 		ArrayList<Double> array = new ArrayList<Double>();
