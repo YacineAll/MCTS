@@ -21,7 +21,7 @@ public class Connect4GUI extends Application {
 
 	private Tile[][] board = new Tile[6][7];
 	
-	private State state = new Connect4State(-1);
+	private State state = new Connect4State(1);
 
 	private Pane root = new Pane();
 
@@ -95,7 +95,9 @@ public class Connect4GUI extends Application {
 			setOnMouseClicked(event -> {
 				if (!this.playable)
 					return;
-
+				if(state.is_game_over()) {
+					return;
+				}
 				if (state.next_to_move() == 1) {
 					try {
 
