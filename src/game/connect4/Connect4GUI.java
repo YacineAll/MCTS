@@ -1,12 +1,6 @@
 package game.connect4;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import game.State;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -14,12 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import mcts.MonteCarloTreeSearch;
 import mcts.MonteCarloTreeSearchNode;
 import mcts.TwoPlayersGameMonteCarloTreeSearchNode;
@@ -28,7 +20,7 @@ public class Connect4GUI extends Application {
 	private final int nb_simulation = 10000;
 
 	private Tile[][] board = new Tile[6][7];
-	private List<Combo> combos = new ArrayList<>();
+	
 	private State state = new Connect4State(-1);
 
 	private Pane root = new Pane();
@@ -49,20 +41,7 @@ public class Connect4GUI extends Application {
 			}
 		}
 
-		// horizontal
-		for (int y = 0; y < 3; y++) {
-			combos.add(new Combo(board[0][y], board[1][y], board[2][y]));
-		}
-
-		// vertical
-		for (int x = 0; x < 3; x++) {
-			combos.add(new Combo(board[x][0], board[x][1], board[x][2]));
-		}
-
-		// diagonals
-		combos.add(new Combo(board[0][0], board[1][1], board[2][2]));
-		combos.add(new Combo(board[2][0], board[1][1], board[0][2]));
-
+		
 		return root;
 	}
 
